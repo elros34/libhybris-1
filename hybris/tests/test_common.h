@@ -19,6 +19,7 @@
 #ifndef __LIBHYBRIS_TEST_COMMON_H
 #define __LIBHYBRIS_TEST_COMMON_H
 
+#include <android-config.h>
 #include <EGL/egl.h>
 
 #ifdef GL_ES_VERSION_3_0
