@@ -1,3 +1,4 @@
+#include <android-config.h>
 #include <stdlib.h>
 
 #include <hardware/hardware.h>
