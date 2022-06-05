@@ -29,6 +29,7 @@
 #include <hybris/common/binding.h>
 
 #include "../egl/ws.h"
+#include "../common/logging.h"
 
 // Android always uses libGLESv2.so for both OpenGL ES 2.0 and OpenGL ES 3.x
 HYBRIS_LIBRARY_INITIALIZE(glesv2, getenv("LIBGLESV2") ? getenv("LIBGLESV2") : "libGLESv2.so");
@@ -125,7 +126,16 @@ HYBRIS_IMPLEMENT_VOID_FUNCTION1(glesv2, glLineWidth, GLfloat);
 HYBRIS_IMPLEMENT_VOID_FUNCTION1(glesv2, glLinkProgram, GLuint);
 HYBRIS_IMPLEMENT_VOID_FUNCTION2(glesv2, glPixelStorei, GLenum, GLint);
 HYBRIS_IMPLEMENT_VOID_FUNCTION2(glesv2, glPolygonOffset, GLfloat, GLfloat);
-HYBRIS_IMPLEMENT_VOID_FUNCTION7(glesv2, glReadPixels, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, void *);
+
+static void (*_glReadPixels) (GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, void *data) = NULL;
+void glReadPixels (GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, void *data)
+{
+    fprintf(stderr, "glReadPixels: x: %d, y: %d, w: %d, h: %d, format: %d, type: %d\n", x, y, width, height, format, type);
+    
+    HYBRIS_DLSYSM(glesv2, &_glReadPixels, "glReadPixels");
+    (*_glReadPixels)(x, y, width, height, format, type, data);
+}
+
 HYBRIS_IMPLEMENT_VOID_FUNCTION0(glesv2, glReleaseShaderCompiler);
 HYBRIS_IMPLEMENT_VOID_FUNCTION4(glesv2, glRenderbufferStorage, GLenum, GLenum, GLsizei, GLsizei);
 HYBRIS_IMPLEMENT_VOID_FUNCTION2(glesv2, glSampleCoverage, GLfloat, GLboolean);
